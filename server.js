@@ -95,12 +95,13 @@ FROM
     menu();
   });
 };
+
 const addDepartement = () => {
   inquirer
     .prompt([
       {
         type: "input",
-        message: "add department",
+        message: "add the new department name: ",
         name: "department_name",
       },
     ])
@@ -109,10 +110,11 @@ const addDepartement = () => {
         `INSERT INTO department (department_name) VALUES (?)`,
         [answers.department_name],
       function  (err, data) {
+        console.log("Added departmnet")
         if (err) {
           console.log(err)
         }
-        console.log(`${answers.department_name} add to DATABASE`);
+        // console.log(`${answers.department_name} add to DATABASE`);
         menu();
       }
       );
@@ -124,7 +126,7 @@ const addRoles = () => {
     .prompt([
       {
         type: "input",
-        message: "add job",
+        message: " add the jobs_title: ",
         name: "jobs_title",
       },
       {
@@ -135,7 +137,7 @@ const addRoles = () => {
       {
         type: "input",
         message: "add departments_id",
-        name: "departments_id",
+        name: "department_id",
       },
     ])
     .then((answers) => {
@@ -143,10 +145,12 @@ const addRoles = () => {
         `INSERT INTO role (jobs_title, salary, department_id) VALUES (?,?,?)`,
         [answers.jobs_title, answers.salary, answers.department_id],
         (err, data) => {
-          if(err){
-            console.log(err)
-          }
-          console.log(`Add role ${answers.jobs_title}`);
+
+          console.log("role")
+          // if(err){
+          //   console.log(err)
+          // }
+          // console.log(`Add role ${answers.jobs_title}`);
           menu();
         }
       );
@@ -183,6 +187,30 @@ const addEmployee = () => {
     });
 };
 
-// app.listen(PORT, () => {
-//   console.log(`Server running on port ${PORT}`);
-// });
+const updateEmployeeRole = () => {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        message: "Choose the employee ID you want to update",
+        name: "employee_id",
+      },
+      {
+        type: "input",
+        message: "update role_id",
+        name: "role_id",
+      },
+    ])
+    .then((answers) => {
+      db.query(
+        `UPDATE employee SET role_id ? WHERE id = ?`, [answers.jobs_title , answers.employee_id],
+        (err, data) => {
+          console.ta("update employee");
+          menu();
+        }
+      );
+    });
+};
+
+
+
