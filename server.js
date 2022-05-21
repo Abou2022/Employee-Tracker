@@ -1,7 +1,7 @@
 const mysql = require("mysql");
 const inquirer = require("inquirer");
 const Choices = require("inquirer/lib/objects/choices");
-const PORT = process.env.PORT || 3001;
+// const PORT = process.env.PORT || 3001;
 
 //Connect to datebase
 const db = mysql.createConnection(
@@ -14,9 +14,10 @@ const db = mysql.createConnection(
   console.log(`Connected to the datebase`)
 );
 menu();
+
 function menu() {
   inquirer
-    .prompt([
+    .prompt(
       {
         type: "list",
         name: "menu",
@@ -30,43 +31,67 @@ function menu() {
           "update an employee role",
         ],
       },
-    ])
+    )
     .then((answer) => {
-      if (answer.menu == "view all department") {
+      if (answer.menu === "view all departments") {
         viewAllDepartement();
-      } else if (answer.menu == "view all roles") {
+      } else if (answer.menu === "view all roles") {
         viewAllRolest();
-      } else if (answer.menu == "view all employees") {
+      } else if (answer.menu === "view all employees") {
         viewAllEmployee();
-      } else if (answer.menu == "add department") {
+      } else if (answer.menu === "add department") {
         addDepartement();
-      } else if (answer.menu == "add roles") {
+      } else if (answer.menu === "add roles") {
         addRoles();
-      } else if (answer.menu == "add employee") {
+      } else if (answer.menu === "add employee") {
         addEmployee();
-      } else if (answer.menu == "update employee role") {
+      } else if (answer.menu === "update an employee role") {
         updateEmployeeRole();
       } else {
         process.exit();
+       
       }
     });
 }
 
 const viewAllDepartement = () => {
-  db.query("SELECT * FROM viewDepartments", function (err, answers) {
-    console.log(answers);
+  db.query("SELECT * FROM department", function (err, answers) {
+    if (err) {
+      console.log(err)
+    }
+    console.table(answers);
     menu();
   });
 };
 const viewAllRolest = () => {
-  db.query("SELECT * FROM viewRoles", function (err, answers) {
-    console.log(answers);
+  db.query("SELECT role.id AS id, role.jobs_title AS jobs_title, department.department_name AS department_name, role.salary AS salary FROM role LEFT JOIN department ON role.department_id = department.id;", 
+  function (err, answers) {
+    if (err) {
+      console.log(err)
+    }
+    console.table(answers);
     menu();
   });
 };
+ 
 const viewAllEmployee = () => {
-  db.query("SELECT * FROM viewEmployees", function (err, answers) {
-    console.log(answers);
+  db.query( `SELECT
+  employee.id,
+  employee.first_name,
+  employee.last_name,
+  department.department_name AS department_name,
+  role.salary AS salary,
+  role.jobs_title AS jobs_title,
+  CONCAT(manager.first_name, " ", manager.last_name) AS manager
+FROM
+  employee
+  LEFT JOIN role ON employee.role_id = role.id
+  LEFT JOIN department ON role.department_id = department.id
+  LEFT JOIN employee manager ON manager.id = employee.manager_id`, function (err, answers) {
+    if (err) {
+      console.log(err)
+    }
+    console.table(answers);
     menu();
   });
 };
@@ -83,10 +108,13 @@ const addDepartement = () => {
       db.query(
         `INSERT INTO department (department_name) VALUES (?)`,
         [answers.department_name],
-        (err, data) => {
-          console.log("Add department");
-          menu();
+      function  (err, data) {
+        if (err) {
+          console.log(err)
         }
+        console.log(`${answers.department_name} add to DATABASE`);
+        menu();
+      }
       );
     });
 };
@@ -112,16 +140,18 @@ const addRoles = () => {
     ])
     .then((answers) => {
       db.query(
-        `INSERT INTO role (jobs_title, salary, department_id) VALUES (?)`,
+        `INSERT INTO role (jobs_title, salary, department_id) VALUES (?,?,?)`,
         [answers.jobs_title, answers.salary, answers.department_id],
         (err, data) => {
-          console.log("Add role");
+          if(err){
+            console.log(err)
+          }
+          console.log(`Add role ${answers.jobs_title}`);
           menu();
         }
       );
     });
 };
-
 const addEmployee = () => {
   inquirer
     .prompt([
@@ -153,6 +183,6 @@ const addEmployee = () => {
     });
 };
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+// app.listen(PORT, () => {
+//   console.log(`Server running on port ${PORT}`);
+// });
