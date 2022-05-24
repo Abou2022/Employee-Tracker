@@ -4,10 +4,14 @@ CREATE DATABASE employeeTracer_db;
 
 USE employeeTracer_db;
 
+-- Each table with Data
+
 CREATE TABLE department (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     department_name VARCHAR(30) UNIQUE NOT NULL
 );
+
+-- Each table with Data
 
 CREATE TABLE role (
     id INT NOT NULL AUTO_INCREMENT,
@@ -18,6 +22,8 @@ CREATE TABLE role (
     -- SET
     -- 	NULL
 );
+
+-- Each table with Data
 
 CREATE TABLE employee (
     id INT NOT NULL AUTO_INCREMENT,

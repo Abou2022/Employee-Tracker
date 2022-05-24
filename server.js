@@ -49,11 +49,10 @@ function menu() {
         updateEmployeeRole();
       } else {
         process.exit();
-       
       }
     });
 }
-
+//To view all departements
 const viewAllDepartement = () => {
   db.query("SELECT * FROM department", function (err, answers) {
     if (err) {
@@ -63,6 +62,7 @@ const viewAllDepartement = () => {
     menu();
   });
 };
+//To view all roles
 const viewAllRolest = () => {
   db.query("SELECT role.id AS id, role.jobs_title AS jobs_title, department.department_name AS department_name, role.salary AS salary FROM role LEFT JOIN department ON role.department_id = department.id;", 
   function (err, answers) {
@@ -73,7 +73,7 @@ const viewAllRolest = () => {
     menu();
   });
 };
- 
+ //To view all employees
 const viewAllEmployee = () => {
   db.query( `SELECT
   employee.id,
@@ -95,7 +95,7 @@ FROM
     menu();
   });
 };
-
+//To add departement
 const addDepartement = () => {
   inquirer
     .prompt([
@@ -114,13 +114,12 @@ const addDepartement = () => {
         if (err) {
           console.log(err)
         }
-        // console.log(`${answers.department_name} add to DATABASE`);
         menu();
       }
       );
     });
 };
-
+//To add role
 const addRoles = () => {
   inquirer
     .prompt([
@@ -145,17 +144,14 @@ const addRoles = () => {
         `INSERT INTO role (jobs_title, salary, department_id) VALUES (?,?,?)`,
         [answers.jobs_title, answers.salary, answers.department_id],
         (err, data) => {
-
+          console.log(err)
           console.log("role")
-          // if(err){
-          //   console.log(err)
-          // }
-          // console.log(`Add role ${answers.jobs_title}`);
           menu();
         }
       );
     });
 };
+//Add employee
 const addEmployee = () => {
   inquirer
     .prompt([
@@ -180,13 +176,15 @@ const addEmployee = () => {
         `INSERT INTO employee (first_name, last_name, role_id) VALUES (?,?,?)`,
         [answers.first_name, answers.last_name, answers.role_id],
         (err, data) => {
+          console.log(err)
           console.log("Add employee");
           menu();
         }
       );
     });
 };
-
+//update employee role
+//could be upgrade by query selector
 const updateEmployeeRole = () => {
   inquirer
     .prompt([
@@ -203,9 +201,10 @@ const updateEmployeeRole = () => {
     ])
     .then((answers) => {
       db.query(
-        `UPDATE employee SET role_id ? WHERE id = ?`, [answers.jobs_title , answers.employee_id],
+        `UPDATE employee SET role_id = ? WHERE id = ?`, [answers.role_id , answers.employee_id],
         (err, data) => {
-          console.ta("update employee");
+          console.log(err)
+          console.table("update employee");
           menu();
         }
       );
