@@ -33,21 +33,3 @@ CREATE TABLE employee (
     manager_id INT,
     PRIMARY KEY (id)
 );
-
--- salary INT NOT NULL,
-
--- manager_report VARCHAR(30),
-
--- FOREIGN KEY (viewDepartement_id) REFERENCES viewDepartements(id) ON DELETE
-
--- SET
-
--- 	NULL FOREIGN KEY (role_id) REFERENCES roles(role_id) ON DELETE
-
--- SET
-
--- 	NULL FOREIGN KEY (salary_id) REFERENCES roles(salary) ON DELETE
-
--- SET
-
--- 	NULL
